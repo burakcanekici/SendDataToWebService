@@ -41,7 +41,6 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View view) {
                 String my_url = "https://php.radford.edu/~jcdavis/D2L/classes/it425/lectmat/webserv/tempws_api.php";
-                String my_data = "?temp=40&scale=F";
 
                 String temp = et_input.getText().toString();
                 String scale = "F";

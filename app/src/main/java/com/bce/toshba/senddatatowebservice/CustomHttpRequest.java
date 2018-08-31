@@ -11,6 +11,7 @@ import org.w3c.dom.Text;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -32,12 +33,17 @@ public class CustomHttpRequest extends AsyncTask<String, Integer, String> {
 
         REQUEST_MODE = params[0];
         String my_url = params[1];
-        JSONObject my_data = null;
+        String my_param = "";
         try {
-            my_data = new JSONObject(params[2]);
+            my_param = CreateRequestParam(new JSONObject(params[2]));
         } catch (JSONException e) {
             e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
+
+        if(REQUEST_MODE.equals("GET"))
+            my_url += "?" + my_param;
 
         try {
             URL url = new URL(my_url);
@@ -48,6 +54,13 @@ public class CustomHttpRequest extends AsyncTask<String, Integer, String> {
                 httpURLConnection.setDoOutput(true);
                 httpURLConnection.setChunkedStreamingMode(0);
 
+                if(REQUEST_MODE.equals("POST")){
+                    OutputStream outputStream = httpURLConnection.getOutputStream();
+                    OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
+                    BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
+                    bufferedWriter.write(my_param);
+                }
+/*
                 // to write tha data in our request
                 OutputStream outputStream = new BufferedOutputStream(httpURLConnection.getOutputStream());
                 OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
@@ -57,7 +70,7 @@ public class CustomHttpRequest extends AsyncTask<String, Integer, String> {
                 outputStreamWriter.write(CreateRequestParam(my_data));
                 outputStreamWriter.flush();
                 outputStreamWriter.close();
-
+*/
                 //httpURLConnection.getResponseCode() == 200
 
                 InputStream is = httpURLConnection.getInputStream();
